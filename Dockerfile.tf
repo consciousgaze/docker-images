@@ -4,6 +4,6 @@ FROM tensorflow/tensorflow:latest-gpu
 RUN python3 -m pip install Pillow && apt install -y git
 
 
-VOLUME /tf
+VOLUME ["/tf"]
 WORKDIR /tf
 
