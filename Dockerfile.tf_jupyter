@@ -1,9 +1,15 @@
 # Tailored tensorflow gpu jupyter image with vim editor.
-FROM tensorflow/tensorflow:2.0.0a0-gpu-py3-jupyter
+FROM tensorflow/tensorflow:2.0.0-gpu-py3-jupyter
 
+RUN apt update && apt -y upgrade && apt install -y git graphviz sudo python3-pip
 RUN python3 -m pip install Pillow pydot matplotlib Pillow
 RUN pip3 install jupyter-tensorboard
-RUN apt update && apt -y upgrade && apt install -y git graphviz
+
+RUN adduser --disabled-password --gecos '' hollyworrier
+RUN adduser hollyworrier sudo
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+USER hollyworrier
+
 RUN mkdir -p $(jupyter --data-dir)/nbextensions && \
     cd $(jupyter --data-dir)/nbextensions && \
     git clone https://github.com/lambdalisue/jupyter-vim-binding vim_binding && \
