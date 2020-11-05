@@ -2,8 +2,8 @@
 FROM tensorflow/tensorflow:2.0.0-gpu-py3-jupyter
 
 RUN apt update && apt -y upgrade && apt install -y git graphviz sudo python3-pip
-RUN python3 -m pip install Pillow pydot matplotlib Pillow
-RUN pip3 install jupyter-tensorboard
+RUN python3 -m pip install Pillow pydot matplotlib Pillow scipy pyyaml
+RUN pip3 install jupyter-tensorboard opencv-python==3.4.5.20
 
 RUN adduser --disabled-password --gecos '' hollyworrier
 RUN adduser hollyworrier sudo
