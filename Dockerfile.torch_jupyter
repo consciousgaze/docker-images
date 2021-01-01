@@ -1,0 +1,31 @@
+FROM pytorch/pytorch:1.6.0-cuda10.1-cudnn7-runtime
+
+RUN apt update && apt -y upgrade && apt install -y git graphviz sudo python3-pip curl && \
+    curl -sL https://deb.nodesource.com/setup_15.x | sudo -E bash - && \
+    apt install -y nodejs && \
+    python3 -m pip install Pillow pydot matplotlib Pillow scipy pyyaml && \
+    pip3 install jupyter opencv-python==3.4.5.20 tornado jupyter-tensorboard \
+    jupyterlab ipywidgets jupyter_http_over_ws pandas
+
+# Enable vim actions in notebook
+RUN mkdir -p $(jupyter --data-dir)/nbextensions && \
+    cd $(jupyter --data-dir)/nbextensions && \
+    git clone https://github.com/lambdalisue/jupyter-vim-binding vim_binding && \
+    jupyter nbextension enable vim_binding/vim_binding
+# Enable jupter lib
+RUN jupyter serverextension enable --py jupyter_http_over_ws && \
+    jupyter nbextension enable --py widgetsnbextension && \
+    jupyter labextension install @jupyter-widgets/jupyterlab-manager
+
+RUN adduser --disabled-password --gecos '' hollyworrier
+RUN adduser hollyworrier sudo
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+USER hollyworrier
+
+EXPOSE 8888
+EXPOSE 6006
+
+VOLUME ["/workspace"]
+WORKDIR /workspace
+
+CMD ["jupyter-notebook", "--allow-root" ,"--port=8888" ,"--no-browser" ,"--ip=0.0.0.0", "--NotebookApp.token='shallnotpass'"]
